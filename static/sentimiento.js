@@ -143,7 +143,7 @@ function generarPlaylist() {
   document.getElementById('mensajeColumna').style.display = 'none';
 
    // URL de la REST API donde enviar la playlist
-   var urlAPI = 'http:/100.25.202.80:5000/api/generar-playlist';
+   var urlAPI = 'http://100.25.202.80:5000/api/generar-playlist';
 
    // Objeto de opciones para la solicitud
    var opciones = {

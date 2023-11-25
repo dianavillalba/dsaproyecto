@@ -9,7 +9,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from scipy.sparse import csr_matrix
 
-logging.basicConfig(filename='app.log', level=logging.DEBUG)
+#logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 df = pd.read_csv("df_spotify.csv", sep='|')
 df1 = df.copy()

@@ -44,9 +44,9 @@ def custom_recommendation_model(df, generos_usuario, seleccion_usuario, n_compon
     # Convertir a matriz dispersa
     atributos_latentes_sparse = csr_matrix(atributos_latentes)
    
-    print(f'Recomendaciones Modelo: {n_components}')
+    print(f'Recomendaciones Modelo n_components: {n_components}')
     print(f'Recomendaciones Modelo atr latentes: {atributos_latentes_sparse}')
-    print(f'Recomendaciones Modelo atr latentes: {atributos.shape}')    
+    print(f'Recomendaciones Modelo atr latentes: {min(atributos.shape)}')    
     
     # Calcular similitud del coseno
     similitud = cosine_similarity(atributos_latentes_sparse) if n_components < min(atributos.shape) else cosine_similarity(atributos)

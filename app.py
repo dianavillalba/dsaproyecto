@@ -138,8 +138,7 @@ def generar_playlist():
              
         print(f"generar Play List")   
         sentimiento = app.config['g_sentimiento']
-        generos = []
-        generos.append(app.config['g_generos'][0])
+        generos = app.config['g_generos']
 
         print(f"Sentimiento: {sentimiento}")
         print(f"Géneros: {generos}")

@@ -2,11 +2,14 @@ from flask import Flask, render_template, request, jsonify, g
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-import json
+import logging
+
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from scipy.sparse import csr_matrix
+
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 df = pd.read_csv("df_spotify.csv", sep='|')
 df1 = df.copy()

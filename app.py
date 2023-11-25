@@ -137,7 +137,7 @@ def generar_playlist():
         # Aqui se hace la llamada del modelo que devuelve una play list segun sentimiento, generos
         
         sentimiento = app.config['g_sentimiento']
-        generos = app.config['g_generos']
+        generos = app.config['g_generos'][0]
 
         print(f"Sentimiento: {sentimiento}")
         print(f"Géneros: {generos}")

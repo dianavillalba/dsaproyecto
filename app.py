@@ -2,14 +2,12 @@ from flask import Flask, render_template, request, jsonify, g
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-import logging
 
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from scipy.sparse import csr_matrix
 
-#logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 df = pd.read_csv("df_spotify.csv", sep='|')
 df1 = df.copy()
@@ -45,6 +43,10 @@ def custom_recommendation_model(df, generos_usuario, seleccion_usuario, n_compon
     
     # Convertir a matriz dispersa
     atributos_latentes_sparse = csr_matrix(atributos_latentes)
+   
+    print(f'Recomendaciones Modelo: {n_components}')
+    print(f'Recomendaciones Modelo atr latentes: {atributos_latentes_sparse}')
+    print(f'Recomendaciones Modelo atr latentes: {atributos.shape}')    
     
     # Calcular similitud del coseno
     similitud = cosine_similarity(atributos_latentes_sparse) if n_components < min(atributos.shape) else cosine_similarity(atributos)
@@ -52,7 +54,7 @@ def custom_recommendation_model(df, generos_usuario, seleccion_usuario, n_compon
     indices_recomendaciones = similitud.sum(axis=0).argsort()[::-1]
 
     recomendaciones = subset_df.iloc[indices_recomendaciones].head(10)
-    #print(f'Recomndaciones Modelo: {recomendaciones.head(10)}')
+    print(f'Recomndaciones Modelo: {recomendaciones.head(10)}')
 
     return recomendaciones
 
@@ -142,22 +144,22 @@ def generar_playlist():
 
         # Verificar si hay canciones no gustadas antes de aplicar el filtrado
         v_canciones_no_gustadas = app.config['g_canciones_no_gustadas']
-        #print(f"v_canciones_no_gustadas: {v_canciones_no_gustadas}")
-        #print(f"len v_canciones_no_gustadas: {len(v_canciones_no_gustadas)}")    
+        print(f"v_canciones_no_gustadas: {v_canciones_no_gustadas}")
+        print(f"len v_canciones_no_gustadas: {len(v_canciones_no_gustadas)}")    
 
         if len(v_canciones_no_gustadas) == 0:
             df1 = df.copy()
-            #print(f" df1 = df.copy()")
+            print(f" df1 = df.copy()")
         else:
             df1 = df[~df['id'].isin(v_canciones_no_gustadas)]
-            #print(f" Elimino Canciones no Gustadas")
+            print(f" Elimino Canciones no Gustadas")
  
         #playlist = "<ul><li>nombre_cancion_1 - Almara</li><li>nombre_cancion_2 - Alejandro Sanz</li></ul>"
         
         print(f" .... Generando Recomendaciones .... ")
         # Obtner Recomendaciones
         df_recomendaciones = custom_recommendation_model(df1, generos, sentimiento, n_components= 5 , scaling_method = "RobustScaler" , top_n = 10)
-
+        print(f" .... Generando Recomendaciones Completado .... ")
         #Generar playlisr 
         df_playlist = df_recomendaciones[["name", "artists"]]
         playlist = "\n".join(df_playlist.apply(lambda row: ' - '.join(row), axis=1))

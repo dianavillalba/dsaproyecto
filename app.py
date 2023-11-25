@@ -135,9 +135,11 @@ def generar_playlist():
     try:
         data = request.get_json()
         # Aqui se hace la llamada del modelo que devuelve una play list segun sentimiento, generos
-        
+             
+        print(f"generar Play List")   
         sentimiento = app.config['g_sentimiento']
-        generos = app.config['g_generos'][0]
+        generos = []
+        generos.append(app.config['g_generos'][0])
 
         print(f"Sentimiento: {sentimiento}")
         print(f"Géneros: {generos}")

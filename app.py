@@ -18,7 +18,9 @@ def custom_recommendation_model(df, generos_usuario, seleccion_usuario, n_compon
         subset_df = df[(df['genero_principal'].isin(generos_usuario)) & (df['sentimiento'] == seleccion_usuario)]
         if subset_df.shape[0] == 0:
             subset_df = df[(df['genero_principal'].isin(generos_usuario)) | (df['sentimiento'] == seleccion_usuario)]
-
+            if subset_df.shape[0] == 0:
+                return pd.DataFrame()
+                
         atributos_deseados = ['valence', 'year', 'acousticness', 'danceability', 'energy', 'explicit',
                              'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'speechiness', 'tempo']
 

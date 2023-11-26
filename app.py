@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from scipy.sparse import csr_matrix
 
 
-df = pd.read_csv("df_spotify.csv", sep='|')
+df = pd.read_csv("df_spotifynew.csv", sep='|')
 df1 = df.copy()
 
 def custom_recommendation_model(df, generos_usuario, seleccion_usuario, n_components, scaling_method, top_n):

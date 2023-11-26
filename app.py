@@ -13,48 +13,53 @@ df = pd.read_csv("df_spotifynew.csv", sep='|')
 df1 = df.copy()
 
 def custom_recommendation_model(df, generos_usuario, seleccion_usuario, n_components, scaling_method, top_n):
-    
-    subset_df = df[(df['genero_principal'].isin(generos_usuario)) & (df['sentimiento'] == seleccion_usuario)]
-    if subset_df.shape[0] > 0:
-        pass
-    else: 
-        subset_df = df[(df['genero_principal'].isin(generos_usuario)) | (df['sentimiento'] == seleccion_usuario)]
+    try:
 
-    atributos_deseados = ['valence', 'year', 'acousticness', 'danceability', 'energy', 'explicit',
-                         'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'speechiness', 'tempo']
-    
-    atributos = subset_df[atributos_deseados].values
-    
-    # Aplicar el escalado
-    if scaling_method == "StandardScaler":
-        scaler = StandardScaler()
-        atributos = scaler.fit_transform(atributos)
-    elif scaling_method == "MinMaxScaler":
-        scaler = MinMaxScaler()
-        atributos = scaler.fit_transform(atributos)
-    elif scaling_method == "RobustScaler":
-        scaler = RobustScaler()
-        atributos = scaler.fit_transform(atributos)
-    
-    # Reducción de dimensionalidad (SVD)
-    # n_components = min(n_components, min(atributos.shape) - 1)
-    svd = TruncatedSVD(n_components=n_components)
-    atributos_latentes = svd.fit_transform(atributos)
-    
-    # Convertir a matriz dispersa
-    atributos_latentes_sparse = csr_matrix(atributos_latentes)
-    
-    # Calcular similitud del coseno
-    print(f'Recomendaciones Modelo: antes de la similitud')
-    similitud = cosine_similarity(atributos_latentes_sparse) if n_components < min(atributos.shape) else cosine_similarity(atributos)
- 
-    print(f'Recomendaciones Modelo: despues de la similitud')  
-    indices_recomendaciones = similitud.sum(axis=0).argsort()[::-1]
+        subset_df = df[(df['genero_principal'].isin(generos_usuario)) & (df['sentimiento'] == seleccion_usuario)]
+        if subset_df.shape[0] == 0:
+            subset_df = df[(df['genero_principal'].isin(generos_usuario)) | (df['sentimiento'] == seleccion_usuario)]
 
-    recomendaciones = subset_df.iloc[indices_recomendaciones].head(10)
+        atributos_deseados = ['valence', 'year', 'acousticness', 'danceability', 'energy', 'explicit',
+                             'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'speechiness', 'tempo']
 
-    #recomendaciones = subset_df.head(10)
-    print(f'Recomendaciones Modelo: {recomendaciones.head(10)}')
+        atributos = subset_df[atributos_deseados].values
+
+        # Aplicar el escalado
+        if scaling_method == "StandardScaler":
+            scaler = StandardScaler()
+            atributos = scaler.fit_transform(atributos)
+        elif scaling_method == "MinMaxScaler":
+            scaler = MinMaxScaler()
+            atributos = scaler.fit_transform(atributos)
+        elif scaling_method == "RobustScaler":
+            scaler = RobustScaler()
+            atributos = scaler.fit_transform(atributos)
+
+        # Reducción de dimensionalidad (SVD)
+        svd = TruncatedSVD(n_components=n_components)
+        atributos_latentes = svd.fit_transform(atributos)
+
+        # Convertir a matriz dispersa
+        atributos_latentes_sparse = csr_matrix(atributos_latentes)
+
+        # Calcular similitud del coseno
+        print(f'Recomendaciones Modelo: antes de la similitud')
+        similitud = cosine_similarity(atributos_latentes_sparse) if n_components < min(atributos.shape) else cosine_similarity(atributos)
+
+        print(f'Recomendaciones Modelo: despues de la similitud')  
+        indices_recomendaciones = similitud.sum(axis=0).argsort()[::-1]
+
+        # Verificar si hay al menos una recomendación
+        if len(indices_recomendaciones) > 0:
+            # Obtener las recomendaciones
+            recomendaciones = subset_df.iloc[indices_recomendaciones].head(10)
+            print(f'Recomendaciones Modelo: {recomendaciones.head(10)}')
+        else:
+            print('No hay canciones para recomendar.')
+            recomendaciones = pd.DataFrame()
+
+    except Exception as e:
+        print(f'Error durante el proceso de recomendación: {e}')
 
     return recomendaciones
 

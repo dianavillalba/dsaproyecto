@@ -170,7 +170,7 @@ def generar_playlist():
         print(f" .... Generando Recomendaciones Completado .... ")
         
         if df_recomendaciones.shape[0] == 0:
-             playlist = Desafortunadamente, la biblioteca no cuenta con canciones disponibles en este momento")
+             playlist = "Desafortunadamente, la biblioteca no cuenta con canciones disponibles en este momento")
         else:
             df_playlist = df_recomendaciones[["name", "artists"]]
             playlist = "\n".join(df_playlist.apply(lambda row: ' - '.join(row), axis=1))

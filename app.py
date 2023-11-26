@@ -168,19 +168,19 @@ def generar_playlist():
         # Obtner Recomendaciones
         df_recomendaciones = custom_recommendation_model(df1, generos, sentimiento, n_components= 5 , scaling_method = "RobustScaler" , top_n = 10)
         print(f" .... Generando Recomendaciones Completado .... ")
-        #Generar playlisr 
-        df_playlist = df_recomendaciones[["name", "artists"]]
-        playlist = "\n".join(df_playlist.apply(lambda row: ' - '.join(row), axis=1))
-
-        print(f'Playlist: {playlist}')
-
-        # remover las recomendaciones en caso que al usuario no le gusten
-        canciones_no_gustadas = df_recomendaciones['id'].tolist()
         
-        #app.config['g_canciones_no_gustadas'] =  canciones_no_gustadas 
-        app.config['g_canciones_no_gustadas'].extend(canciones_no_gustadas)
+        if df_recomendaciones.shape[0] == 0:
+             playlist = Desafortunadamente, la biblioteca no cuenta con canciones disponibles en este momento")
+        else:
+            df_playlist = df_recomendaciones[["name", "artists"]]
+            playlist = "\n".join(df_playlist.apply(lambda row: ' - '.join(row), axis=1))
 
-        #print(f'Canciones no Gustadas: {canciones_no_gustadas}')
+            # remover las recomendaciones en caso que al usuario no le gusten
+            canciones_no_gustadas = df_recomendaciones['id'].tolist()
+            app.config['g_canciones_no_gustadas'].extend(canciones_no_gustadas)
+            #print(f'Canciones no Gustadas: {canciones_no_gustadas}')
+        
+        print(f'Playlist: {playlist}')
         return jsonify({'playlist': f'{playlist}'}), 200
 
     except Exception as e:

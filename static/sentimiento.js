@@ -69,7 +69,7 @@ function seleccionarGenero(genero, boton) {
         // Si ya está seleccionado, quitarlo de la lista y restaurar el color
         generosSeleccionados = generosSeleccionados.filter(item => item !== genero);
         boton.style.backgroundColor = "";
-    } else if (generosSeleccionados.length < 1) {
+    } else if (generosSeleccionados.length < 3) {
         // Si no está seleccionado y hay menos de tres seleccionados, agregarlo a la lista y cambiar el color
         generosSeleccionados.push(genero);
         boton.style.backgroundColor = "cornflowerblue";
@@ -77,7 +77,7 @@ function seleccionarGenero(genero, boton) {
 
     // Habilitar o deshabilitar el botón "Generar Playlist" según la cantidad de elementos seleccionados
     var generarPlaylistBtn = document.getElementById('generarPlaylist');
-    generarPlaylistBtn.disabled = generosSeleccionados.length !== 1;
+    generarPlaylistBtn.disabled = generosSeleccionados.length !== 3;
 }
 
 function generarListaGeneros() {
